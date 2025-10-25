@@ -10,10 +10,28 @@ from random import randint
 Builder.load_file("my.kv")
 
 
+
 class MyAnimations:
     @staticmethod
-    def error():
-        return Animation(x=50, duration=0) + Animation(x=20, duration=0.5, t="out_elastic")
+    def error(object: Label):
+        anima = Animation(x=50+object.pos[0], duration=0) + Animation(x=0+object.pos[0], duration=0.5, t="out_elastic")
+        anima &= Animation(color=(1,0,0,1), d=0) + Animation(color=(1,1,1,1), d=0.5)
+        anima.start(object)
+
+
+    @staticmethod
+    def success(object: Label):
+        anima = Animation(color=(0,1,0,1), d=0) + Animation(color=(1,1,1,1), d=0.5)
+        anima.start(object)
+                
+
+
+    @staticmethod
+    def flow(object):
+        pos = object.pos
+        anima = Animation(y=-10+pos[1], duration=2.5, t="in_out_cubic") + Animation(y=10+pos[1], duration=2.5, t="in_out_cubic")
+        anima.repeat = True
+        anima.start(object)
 
 
 # function
@@ -22,8 +40,6 @@ class UpBox(BoxLayout):
         super().__init__(**kwarg)
         self.label = Label(text="0 + 0 = ?")
         self.label.font_size = 60
-
-
 
         self.add_widget(self.label)
 
@@ -103,14 +119,18 @@ class MainBox(BoxLayout):
         self.down_box.generate(right_num=self.right_num, max_num=self.max_num)
         self.add_widget(self.down_box)
 
+        # Animations
+    #        MyAnimations.flow(self.up_box)
+
 
 
     def check(self, *args, **kwargs):
         if self.right_num == kwargs["num"]:
             self.right_num = self.up_box.generate(max_num=self.max_num)
             self.down_box.generate(right_num=self.right_num, max_num=self.max_num)
+            MyAnimations.success(self.up_box.label)
         else:
-            MyAnimations.error().start(self.up_box)
+            MyAnimations.error(self.up_box.label)
 
 
 class MyApp(App):
