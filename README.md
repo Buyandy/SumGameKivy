@@ -18,3 +18,9 @@ cd SumGameKivy
 ```sh
 uv run main.py # Сам соберет зависимости и запустит проект в космос
 ```
+
+### Если нету uv
+
+```sh
+pip install uv
+```
